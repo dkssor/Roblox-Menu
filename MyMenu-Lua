@@ -1,0 +1,120 @@
+--[[
+    📌 Menu Simples Roblox - v1.0
+    - Interface limpa e organizada
+    - 3 Menus: Principal / ESP / Ferramentas
+    - Fácil de editar/adicionar botões
+]]
+
+local ver = "v1.0"
+local Player = game.Players.LocalPlayer
+
+-- Criar GUI principal
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MyMenu"
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+
+-- 🟢 Função para criar botões
+local function criarBotao(nome, texto, cor, parent, ordem, callback)
+	local botao = Instance.new("TextButton")
+	botao.Name = nome
+	botao.Text = texto
+	botao.BackgroundColor3 = cor
+	botao.Size = UDim2.new(0, 220, 0, 40)
+	botao.TextScaled = true
+	botao.TextColor3 = Color3.fromRGB(255,255,255)
+	botao.LayoutOrder = ordem or 0
+	botao.Parent = parent
+
+	-- ação do botão
+	if callback then
+		botao.MouseButton1Click:Connect(callback)
+	end
+
+	return botao
+end
+
+-- 🟢 Função para criar janelas
+local function criarJanela(nome, titulo)
+	local frame = Instance.new("Frame", ScreenGui)
+	frame.Name = nome
+	frame.Size = UDim2.new(0, 320, 0, 260)
+	frame.Position = UDim2.new(0.5, -160, 0.5, -130)
+	frame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	frame.Visible = false
+	
+	-- TopBar
+	local top = Instance.new("TextLabel", frame)
+	top.Size = UDim2.new(1,0,0,40)
+	top.BackgroundColor3 = Color3.fromRGB(25,25,25)
+	top.Text = titulo .. " - " .. ver
+	top.TextScaled = true
+	top.TextColor3 = Color3.fromRGB(255,255,0)
+
+	-- Container
+	local body = Instance.new("Frame", frame)
+	body.Size = UDim2.new(1,0,1,-40)
+	body.Position = UDim2.new(0,0,0,40)
+	body.BackgroundTransparency = 1
+	
+	local layout = Instance.new("UIListLayout", body)
+	layout.Padding = UDim.new(0,6)
+	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	layout.VerticalAlignment = Enum.VerticalAlignment.Top
+	
+	return frame, body
+end
+
+-- Criar janelas
+local MainMenu, MainBody = criarJanela("MainMenu", "Menu Principal")
+local ESPMenu, ESPBody = criarJanela("ESPMenu", "ESP")
+local ToolsMenu, ToolsBody = criarJanela("ToolsMenu", "Ferramentas")
+
+-- Abre o menu principal no início
+MainMenu.Visible = true
+
+-- 🔹 Botões do menu principal
+criarBotao("BtnESP", "ESP", Color3.fromRGB(191,0,0), MainBody, 1, function()
+	MainMenu.Visible = false
+	ESPMenu.Visible = true
+end)
+
+criarBotao("BtnTools", "Ferramentas", Color3.fromRGB(0,128,255), MainBody, 2, function()
+	MainMenu.Visible = false
+	ToolsMenu.Visible = true
+end)
+
+-- 🔹 Botões ESP
+criarBotao("BtnPlayerESP", "Player ESP", Color3.fromRGB(191,0,0), ESPBody, 1, function()
+	print("✅ Player ESP ativado!")
+end)
+
+criarBotao("BtnPCESP", "PC ESP", Color3.fromRGB(191,0,0), ESPBody, 2, function()
+	print("✅ PC ESP ativado!")
+end)
+
+criarBotao("BtnExitESP", "Exit ESP", Color3.fromRGB(191,0,0), ESPBody, 3, function()
+	print("✅ Exit ESP ativado!")
+end)
+
+-- 🔹 Botões Ferramentas
+criarBotao("BtnAutoPlay", "Auto Play", Color3.fromRGB(0,191,0), ToolsBody, 1, function()
+	print("🎮 Auto Play ligado!")
+end)
+
+criarBotao("BtnAutoInteract", "Auto Interact", Color3.fromRGB(0,191,0), ToolsBody, 2, function()
+	print("⚡ Auto Interact ligado!")
+end)
+
+criarBotao("BtnNeverFail", "Never Fail", Color3.fromRGB(0,191,0), ToolsBody, 3, function()
+	print("🔥 Never Fail ativado!")
+end)
+
+-- 🔹 Voltar com tecla ESC
+game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
+	if gp then return end
+	if input.KeyCode == Enum.KeyCode.Escape then
+		MainMenu.Visible = true
+		ESPMenu.Visible = false
+		ToolsMenu.Visible = false
+	end
+end)
